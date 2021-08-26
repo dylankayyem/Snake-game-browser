@@ -12,97 +12,97 @@ let speed = 0.8;
 let timerId = 0;
 
 function createGrid() {
-	//create 100 of these elements with a for loop
+// Create 100 of these elements with a for loop:
 	for (let i = 0; i < 100; i++) {
-		// Create element
+// Create element:
 		const square = document.createElement("div");
-		// Add styling to the element
+// Add styling to the element:
 		square.classList.add("square");
-		// Put the element into our grid
+// Put the element into our grid:
 		grid.appendChild(square);
-		// Push it into a new squares array
+// Push it into a new squares array:
 		squares.push(square);
 	}
 }
 createGrid();
-// Drawing the snake on the grid
+
+// Drawing the snake on the grid:
 currentSnake.forEach((index) => squares[index].classList.add("snake"));
 
-// create a start game function and implement more functionality:
-// add setInterval for game to start and add move() function for it to begin:
+// Create a start game function and implement more functionality:
+// Add setInterval for game to start and add move() function for it to begin:
 function startGame() {
-	// remove the snake
+// Remove the snake
 	currentSnake.forEach((index) => squares[index].classList.remove("snake"));
-	// remove the apple
+// Remove the apple
 	squares[appleIndex].classList.remove("apple");
-	// clear timer invtervals
+// Clear timer invtervals:
 	clearInterval(timerId);
-	// reset all starting variables
+// Reset all starting variables:
 	currentSnake = [2, 1, 0];
 	direction = 1;
 	score = 0;
-	// re add the new score to browser
+// Add the new score to browser:
 	scoreDisplay.textContent = score;
 	intervalTime = 1000;
 	generateApples();
-	// re add the class of snake to our new currentSnake
+// Add the class of snake to our new currentSnake:
 	currentSnake.forEach((index) => squares[index].classList.add("snake"));
-	// reset the timer Id back to normal
+// Reset the timer Id back to normal
 	timerId = setInterval(move, intervalTime);
 }
 
 function move() {
-	// using modulus in our game:
 	if (
-		//if snake has hit bottom
+// If snake has hit the bottom wall:
 		(currentSnake[0] + width >= width * width && direction === width) ||
-		//if snake has hit right wall
+// If snake has hit right wall:
 		(currentSnake[0] % width === width - 1 && direction === 1) ||
-		//if snake has hit left wall
+// If snake has hit left wall:
 		(currentSnake[0] % width === 0 && direction === -1) ||
-		//if snake has hit top
+// If snake has hit top:
 		(currentSnake[0] + width < 0 && direction === -width) ||
-		// if snake goes through itself
+// If snake goes through itself:
 		squares[currentSnake[0] + direction].classList.contains("snake")
 	)
+// Resets the move function and the timed interval it was given to null:
 		return clearInterval(timerId);
 
-	// remove last element from our currentSnake array
+// Remove last element from our currentSnake array:
 	const tail = currentSnake.pop();
-	//remove styling from last element
+// Remove styling from last element:
 	squares[tail].classList.remove("snake");
-	//add sqaure in direction we are heading
+// Add square in direction we are heading:
 	currentSnake.unshift(currentSnake[0] + direction);
 
-	// integrate the snake head obtaining the random generated apples:
+// Integrate the snake head obtaining the random generated apples:
 	if (squares[currentSnake[0]].classList.contains("apple")) {
-		//remove the class of apple
+// Remove the class of apple
 		squares[currentSnake[0]].classList.remove("apple");
-		//grow our snake by adding class of snake to it
+// Grow our snake by adding class of snake to it
 		squares[tail].classList.add("snake");
-
-		//grow our snake array
+// Grow our snake array
 		currentSnake.push(tail);
-		//generate new apple
+// Generate new apple
 		generateApples();
-		//add one to the score
+// Add one to the score
 		score++;
-		//display our score
+// Display our score
 		scoreDisplay.textContent = score;
-		//speed up our snake
+// Speed up our snake
 		clearInterval(timerId);
 		intervalTime = intervalTime * speed;
 		timerId = setInterval(move, intervalTime);
 	}
 
-	//add styling so we can see it
+// Add styling so we can see the snake having moved one direction
 	squares[currentSnake[0]].classList.add("snake");
 }
 
-// generate apples randomly on the grid:
+// Generate apples randomly on the grid:
 function generateApples() {
 	do {
-		// generate random number
+// Generate random number
 		appleIndex = Math.floor(Math.random() * squares.length);
 	} while (squares[appleIndex].classList.contains("snake"));
 	squares[appleIndex].classList.add("apple");
@@ -110,23 +110,20 @@ function generateApples() {
 
 function control(e) {
 	if (e.keyCode === 39) {
-		// console.log("Right clicked!");
+// console.log("Right clicked!");
 		direction = 1;
 	} else if (e.keyCode === 38) {
-		// console.log("Up clicked!");
+// console.log("Up clicked!");
 		direction = -width;
 	} else if (e.keyCode === 37) {
-		// console.log("Left clicked!");
+// console.log("Left clicked!");
 		direction = -1;
 	} else if (e.keyCode === 40) {
-		// console.log("Down clicked!");
+// console.log("Down clicked!");
 		direction = +width;
 	}
 }
-
-document.addEventListener("keyup", control);
+// Adds function control(e) as an event listener so that arrow keys move snake:
+document.addEventListener("keydown", control);
+// Adds function startGame() as an event listener so that the button resets the board:
 document.addEventListener("click", startGame);
-
-// Checklist:
-// (1) Style style style
-// (2) Publish your project on GitHub, Portfolio
